@@ -1,0 +1,10 @@
+hard_thresholds:
+  overall_pass_rate: 0.80
+  critical_case_pass_rate: 0.95
+  transcript_accuracy: 0.90
+  hallucination_rate_max: 0.03
+
+regression_limits:
+  max_overall_drop: 0.01
+  max_classification_drop: 0.005
+  allow_new_critical_failures: false

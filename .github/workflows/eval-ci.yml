@@ -1,0 +1,40 @@
+name: Genomics Eval CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test-and-eval:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tabix samtools bcftools
+
+      - name: Install package
+        run: pip install -e ".[dev]"
+
+      - name: Run unit tests
+        run: pytest -q
+
+      - name: Run demo evaluation
+        run: make demo
+
+      - name: Run release gate
+        run: |
+          genomics-eval regression \
+            --current data/results/scores.parquet \
+            --baseline data/baselines/scores_v1.parquet \
+            --thresholds configs/thresholds.yaml \
+            --out data/results/regression_report.json

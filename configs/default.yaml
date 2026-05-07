@@ -1,0 +1,10 @@
+variantvalidator:
+  enabled: false
+  base_url: "https://rest.variantvalidator.org"
+  endpoint_template: "/VariantValidator/variantvalidator/{assembly}/{hgvs}/all?content-type=application/json"
+  timeout_seconds: 20
+  cache_path: "data/cache/variantvalidator_cache.json"
+
+langfuse:
+  enabled: false
+  dataset_name: "genomics/variant-eval-demo"

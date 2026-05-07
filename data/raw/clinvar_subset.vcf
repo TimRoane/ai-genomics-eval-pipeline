@@ -1,0 +1,15 @@
+##fileformat=VCFv4.2
+##INFO=<ID=CLNSIG,Number=.,Type=String,Description="Clinical significance">
+##INFO=<ID=CLNREVSTAT,Number=.,Type=String,Description="Review status">
+##INFO=<ID=CLNDN,Number=.,Type=String,Description="Condition">
+##INFO=<ID=GENEINFO,Number=1,Type=String,Description="Gene symbol and id">
+##INFO=<ID=RS,Number=1,Type=String,Description="dbSNP rs id">
+##INFO=<ID=ALLELEID,Number=1,Type=String,Description="ClinVar allele id">
+##INFO=<ID=CLNHGVS,Number=.,Type=String,Description="HGVS names">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+17	43071077	.	A	AT	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided_multiple_submitters_no_conflicts;CLNDN=Hereditary_breast_and_ovarian_cancer_syndrome;GENEINFO=BRCA1:672;ALLELEID=12345;CLNHGVS=NM_007294.4:c.68_69del
+19	44908684	rs429358	T	C	.	.	CLNSIG=Uncertain_significance;CLNREVSTAT=criteria_provided_single_submitter;CLNDN=not_specified;GENEINFO=APOE:348;RS=429358;ALLELEID=67890;CLNHGVS=NM_000041.4:c.388T>C
+19	44908822	rs7412	C	T	.	.	CLNSIG=Uncertain_significance;CLNREVSTAT=criteria_provided_single_submitter;CLNDN=not_specified;GENEINFO=APOE:348;RS=7412;ALLELEID=67891;CLNHGVS=NM_000041.4:c.526C>T
+1	169519049	rs6025	C	T	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided_multiple_submitters_no_conflicts;CLNDN=Thrombophilia_due_to_activated_protein_C_resistance;GENEINFO=F5:2153;RS=6025;ALLELEID=6025;CLNHGVS=NM_000130.5:c.1601G>A
+6	26091179	rs1800562	G	A	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided_multiple_submitters_no_conflicts;CLNDN=Hereditary_hemochromatosis;GENEINFO=HFE:3077;RS=1800562;ALLELEID=1800562;CLNHGVS=NM_000410.4:c.845G>A
+1	11796321	rs1801133	G	A	.	.	CLNSIG=Benign;CLNREVSTAT=criteria_provided_multiple_submitters_no_conflicts;CLNDN=not_specified;GENEINFO=MTHFR:4524;RS=1801133;ALLELEID=1801133;CLNHGVS=NM_005957.5:c.665C>T

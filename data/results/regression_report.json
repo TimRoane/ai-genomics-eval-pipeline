@@ -1,0 +1,158 @@
+{
+  "baseline_metrics": {
+    "classification_accuracy": 0.98,
+    "condition_accuracy": 0.98,
+    "critical_case_pass_rate": 1.0,
+    "critical_failures": 0,
+    "failures_by_mode": {
+      "DISEASE_MAPPING_ERROR": 1,
+      "HALLUCINATED_SOURCE": 1,
+      "HGVS_MISMATCH": 1,
+      "MISSING_LIMITATION": 1,
+      "NO_OUTPUT": 1,
+      "OVERCONFIDENT_VUS": 1,
+      "PARSER_FAILURE": 1,
+      "WRONG_CLASSIFICATION": 1,
+      "WRONG_GENE": 1,
+      "WRONG_TRANSCRIPT": 1
+    },
+    "field_accuracy_counts": {
+      "classification_accuracy": {
+        "assessable": 50,
+        "correct": 49,
+        "incorrect": 1
+      },
+      "condition_accuracy": {
+        "assessable": 50,
+        "correct": 49,
+        "incorrect": 1
+      },
+      "gene_accuracy": {
+        "assessable": 50,
+        "correct": 49,
+        "incorrect": 1
+      },
+      "transcript_accuracy": {
+        "assessable": 42,
+        "correct": 41,
+        "incorrect": 1
+      }
+    },
+    "gene_accuracy": 0.98,
+    "hallucination_rate": 0.0192,
+    "overall_pass_rate": 0.8269,
+    "transcript_accuracy": 0.9762
+  },
+  "checks": {
+    "allow_new_critical_failures": true,
+    "critical_case_pass_rate": true,
+    "hallucination_rate_max": true,
+    "max_classification_drop": true,
+    "max_overall_drop": true,
+    "overall_pass_rate": true,
+    "transcript_accuracy": true
+  },
+  "current_metrics": {
+    "classification_accuracy": 0.98,
+    "condition_accuracy": 0.98,
+    "critical_case_pass_rate": 1.0,
+    "critical_failures": 0,
+    "failures_by_mode": {
+      "DISEASE_MAPPING_ERROR": 1,
+      "HALLUCINATED_SOURCE": 1,
+      "HGVS_MISMATCH": 1,
+      "MISSING_LIMITATION": 1,
+      "NO_OUTPUT": 1,
+      "OVERCONFIDENT_VUS": 1,
+      "PARSER_FAILURE": 1,
+      "WRONG_CLASSIFICATION": 1,
+      "WRONG_GENE": 1,
+      "WRONG_TRANSCRIPT": 1
+    },
+    "field_accuracy_counts": {
+      "classification_accuracy": {
+        "assessable": 50,
+        "correct": 49,
+        "incorrect": 1
+      },
+      "condition_accuracy": {
+        "assessable": 50,
+        "correct": 49,
+        "incorrect": 1
+      },
+      "gene_accuracy": {
+        "assessable": 50,
+        "correct": 49,
+        "incorrect": 1
+      },
+      "transcript_accuracy": {
+        "assessable": 42,
+        "correct": 41,
+        "incorrect": 1
+      }
+    },
+    "gene_accuracy": 0.98,
+    "hallucination_rate": 0.0192,
+    "overall_pass_rate": 0.8269,
+    "pass_rate_by_tag": {
+      "apoe": 1.0,
+      "benign": 0.0,
+      "brca": 1.0,
+      "cancer_predisposition": 1.0,
+      "cardiovascular": 1.0,
+      "chr_prefix": 1.0,
+      "coagulation": 1.0,
+      "common_variant": 0.0,
+      "connective_tissue": 1.0,
+      "dbsnp": 0.5714,
+      "deletion": 0.625,
+      "developmental": 1.0,
+      "disease_mapping": 0.0,
+      "duplication": 1.0,
+      "endocrine": 1.0,
+      "hallucinated_source": 0.0,
+      "hearing_loss": 1.0,
+      "hemoglobinopathy": 1.0,
+      "hgvs": 0.8636,
+      "hgvs_mismatch": 0.0,
+      "indel": 1.0,
+      "intronic": 1.0,
+      "likely_pathogenic": 1.0,
+      "metabolic": 1.0,
+      "missing_limitation": 0.0,
+      "negative_control": 0.0,
+      "neurogenetics": 1.0,
+      "neuromuscular": 1.0,
+      "no_output": 0.0,
+      "normalization": 1.0,
+      "oncology": 1.0,
+      "parser_failure": 0.0,
+      "pathogenic": 1.0,
+      "pharmacogenomics": 1.0,
+      "positive_control": 1.0,
+      "protein_effect": 1.0,
+      "rasopathy": 1.0,
+      "renal": 1.0,
+      "snv": 0.85,
+      "transcript_specific": 1.0,
+      "vcf": 0.625,
+      "vus": 1.0,
+      "wrong_gene": 0.0,
+      "wrong_transcript": 0.0
+    },
+    "transcript_accuracy": 0.9762
+  },
+  "failures": [],
+  "hard_threshold_checks": {
+    "critical_case_pass_rate": true,
+    "hallucination_rate_max": true,
+    "overall_pass_rate": true,
+    "transcript_accuracy": true
+  },
+  "passed": true,
+  "regression_checks": {
+    "allow_new_critical_failures": true,
+    "max_classification_drop": true,
+    "max_overall_drop": true
+  }
+}

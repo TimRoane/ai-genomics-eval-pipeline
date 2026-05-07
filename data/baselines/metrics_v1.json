@@ -1,0 +1,44 @@
+{
+  "overall_pass_rate": 0.8269,
+  "critical_case_pass_rate": 1.0,
+  "gene_accuracy": 0.98,
+  "classification_accuracy": 0.98,
+  "condition_accuracy": 0.98,
+  "transcript_accuracy": 0.9762,
+  "hallucination_rate": 0.0192,
+  "field_accuracy_counts": {
+    "classification_accuracy": {
+      "assessable": 50,
+      "correct": 49,
+      "incorrect": 1
+    },
+    "condition_accuracy": {
+      "assessable": 50,
+      "correct": 49,
+      "incorrect": 1
+    },
+    "gene_accuracy": {
+      "assessable": 50,
+      "correct": 49,
+      "incorrect": 1
+    },
+    "transcript_accuracy": {
+      "assessable": 42,
+      "correct": 41,
+      "incorrect": 1
+    }
+  },
+  "failures_by_mode": {
+    "DISEASE_MAPPING_ERROR": 1,
+    "HALLUCINATED_SOURCE": 1,
+    "HGVS_MISMATCH": 1,
+    "MISSING_LIMITATION": 1,
+    "NO_OUTPUT": 1,
+    "OVERCONFIDENT_VUS": 1,
+    "PARSER_FAILURE": 1,
+    "WRONG_CLASSIFICATION": 1,
+    "WRONG_GENE": 1,
+    "WRONG_TRANSCRIPT": 1
+  },
+  "critical_failures": 0
+}

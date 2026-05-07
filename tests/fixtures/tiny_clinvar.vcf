@@ -1,0 +1,3 @@
+##fileformat=VCFv4.2
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+17	43071077	.	A	AT	.	.	CLNSIG=Pathogenic/Likely_pathogenic;CLNREVSTAT=criteria_provided_multiple_submitters_no_conflicts;CLNDN=Hereditary_breast_and_ovarian_cancer_syndrome;GENEINFO=BRCA1:672;ALLELEID=12345;CLNHGVS=NM_007294.4:c.68_69del,NM_007299.4:c.68_69del

@@ -1,0 +1,27 @@
+##fileformat=VCFv4.3
+##source=ai-genomics-eval-pipeline-synthetic-fixture
+##reference=GRCh38
+##contig=<ID=1,Description="GRCh38 chromosome 1 synthetic subset">
+##contig=<ID=6,Description="GRCh38 chromosome 6 synthetic subset">
+##contig=<ID=17,Description="GRCh38 chromosome 17 synthetic subset">
+##contig=<ID=19,Description="GRCh38 chromosome 19 synthetic subset">
+##INFO=<ID=GENE,Number=1,Type=String,Description="Gene symbol used by the synthetic evaluation fixture">
+##INFO=<ID=CLNSIG,Number=.,Type=String,Description="Synthetic clinical significance label aligned to local expected outputs">
+##INFO=<ID=CLNREVSTAT,Number=.,Type=String,Description="Synthetic ClinVar-like review status label">
+##INFO=<ID=CLNDN,Number=.,Type=String,Description="Synthetic ClinVar-like disease name">
+##INFO=<ID=RS,Number=1,Type=String,Description="dbSNP rs identifier where applicable">
+##INFO=<ID=SYNTHETIC_REASON,Number=1,Type=String,Description="Reason this synthetic record exists in the demo fixture">
+##FILTER=<ID=PASS,Description="Synthetic record passes fixture quality filters">
+##FILTER=<ID=LowQual,Description="Synthetic low-quality record included to exercise known warning/error-state handling">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read depth">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for REF and ALT alleles">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype quality">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	demo_case
+17	43071077	.	A	AT	99	PASS	GENE=BRCA1;CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided_multiple_submitters_no_conflicts;CLNDN=Hereditary_breast_and_ovarian_cancer_syndrome;RS=rs80357914;SYNTHETIC_REASON=vcf_normalization_indel	GT:DP:AD:GQ	0/1:48:23,25:99
+19	44908684	rs429358	T	C	80	PASS	GENE=APOE;CLNSIG=Uncertain_significance;CLNREVSTAT=criteria_provided_single_submitter;CLNDN=not_specified;RS=rs429358;SYNTHETIC_REASON=dbsnp_annotation_fixture	GT:DP:AD:GQ	0/1:42:21,21:87
+19	44908822	rs7412	C	T	78	PASS	GENE=APOE;CLNSIG=Uncertain_significance;CLNREVSTAT=criteria_provided_single_submitter;CLNDN=not_specified;RS=rs7412;SYNTHETIC_REASON=chr_prefix_normalization_fixture	GT:DP:AD:GQ	0/1:39:19,20:84
+1	169519049	rs6025	C	T	92	PASS	GENE=F5;CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided_multiple_submitters_no_conflicts;CLNDN=Thrombophilia_due_to_activated_protein_C_resistance;RS=rs6025;SYNTHETIC_REASON=known_positive_control	GT:DP:AD:GQ	0/1:51:28,23:96
+6	26091179	rs1800562	G	A	88	PASS	GENE=HFE;CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided_multiple_submitters_no_conflicts;CLNDN=Hereditary_hemochromatosis;RS=rs1800562;SYNTHETIC_REASON=known_positive_control	GT:DP:AD:GQ	0/1:46:20,26:91
+1	11796321	rs1801133	G	A	75	PASS	GENE=MTHFR;CLNSIG=Benign;CLNREVSTAT=criteria_provided_multiple_submitters_no_conflicts;CLNDN=not_specified;RS=rs1801133;SYNTHETIC_REASON=known_negative_control	GT:DP:AD:GQ	0/1:44:22,22:90
+1	11796321	rs1801133_lowqual	G	A	12	LowQual	GENE=MTHFR;CLNSIG=Benign;CLNREVSTAT=criteria_provided_single_submitter;CLNDN=not_specified;RS=rs1801133;SYNTHETIC_REASON=known_low_quality_error_state	GT:DP:AD:GQ	0/1:8:4,4:12

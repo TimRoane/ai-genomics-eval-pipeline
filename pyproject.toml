@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-genomics-eval-pipeline"
+version = "0.1.0"
+description = "Automated evaluation pipeline for AI-generated genomic variant interpretations."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.0",
+  "pyarrow>=14.0",
+  "pydantic>=2.0",
+  "typer>=0.9",
+  "rich>=13.0",
+  "requests>=2.31",
+  "pyyaml>=6.0",
+  "scikit-learn>=1.3",
+  "streamlit>=1.31",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.4",
+  "pytest-mock>=3.12",
+]
+langfuse = [
+  "langfuse>=2.0",
+]
+
+[project.scripts]
+genomics-eval = "genomics_eval.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

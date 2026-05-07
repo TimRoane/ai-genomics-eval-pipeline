@@ -1,3 +1,24 @@
+Metadata-Version: 2.4
+Name: ai-genomics-eval-pipeline
+Version: 0.1.0
+Summary: Automated evaluation pipeline for AI-generated genomic variant interpretations.
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: pandas>=2.0
+Requires-Dist: pyarrow>=14.0
+Requires-Dist: pydantic>=2.0
+Requires-Dist: typer>=0.9
+Requires-Dist: rich>=13.0
+Requires-Dist: requests>=2.31
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: scikit-learn>=1.3
+Requires-Dist: streamlit>=1.31
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4; extra == "dev"
+Requires-Dist: pytest-mock>=3.12; extra == "dev"
+Provides-Extra: langfuse
+Requires-Dist: langfuse>=2.0; extra == "langfuse"
+
 # AI Genomics Evaluation Pipeline
 
 This project demonstrates an automated benchmarking and regression-testing framework for AI-generated genomic interpretations.
@@ -25,25 +46,6 @@ make dashboard
 ```
 
 The demo is fully local and does not require paid API keys or external APIs.
-
-The bundled example set includes a broader mix of realistic HGVS transcript nomenclature:
-
-- `NM_007294.4:c.68_69del` for a BRCA1 deletion
-- `NM_000059.4:c.5946del` for a BRCA2 deletion
-- `NM_000492.4:c.1521_1523del` for a CFTR in-frame deletion
-- `NM_000518.5:c.20A>T` for an HBB substitution
-- `NM_000546.6:c.743G>A` for a TP53 substitution
-- `NM_000277.3:c.1222C>T` for a PAH substitution
-- `NM_004004.6:c.35del` for a GJB2 deletion
-- `NM_000527.5:c.2054C>T` for an LDLR substitution
-
-VCF-style examples are still included to exercise canonical keys, `chr` prefix handling, ClinVar-style annotation, and dbSNP lookup. `data/raw/example.vcf` is a synthetic modern-format VCF fixture, not a downloaded patient, cohort, ClinVar, or 1000 Genomes file. It uses realistic VCF metadata, INFO/FILTER/FORMAT definitions, and a demo sample column while keeping synthetic provenance explicit.
-
-The demo also includes intentional negative controls tagged with `negative_control`. These cases make the mock model produce representative failures such as `WRONG_GENE`, `WRONG_TRANSCRIPT`, `HGVS_MISMATCH`, `DISEASE_MAPPING_ERROR`, `HALLUCINATED_SOURCE`, `MISSING_LIMITATION`, `PARSER_FAILURE`, and `NO_OUTPUT`. The goal is to make the scoring, regression report, and dashboard useful for triage rather than showing only all-green toy output.
-
-To balance that failure-mode coverage, the dataset also includes 30 `positive_control` HGVS cases across cancer predisposition, cardiovascular, connective tissue, metabolic, renal, neuromuscular, and neurogenetics examples. These are expected to pass cleanly and make the dashboard's accuracy views more representative.
-
-Release gating has two layers. `hard_thresholds` in `configs/thresholds.yaml` are absolute current-run requirements for overall pass rate, critical case pass rate, transcript accuracy, and maximum hallucination rate. These do not move with the baseline. `regression_limits` compare the current run to the baseline and catch performance drops.
 
 Expected demo output is written under `data/results/`, including:
 
@@ -84,11 +86,3 @@ streamlit run src/genomics_eval/dashboard/app.py
 ```
 
 The dashboard shows summary metrics, tag-level pass rates, failure modes, failed critical cases, case drilldowns, and release gate status.
-
-### Dashboard Summary
-
-![Dashboard summary showing release gate status, hard thresholds, failure categories, and tag accuracy](images/dashboard.png)
-
-### Case Detail Modal
-
-![Case detail modal showing input, expected versus extracted values, scoring, annotation context, and AI output](images/casedetails.png)
