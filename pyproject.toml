@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Automated evaluation pipeline for AI-generated genomic variant interpretations."
 readme = "README.md"
 requires-python = ">=3.11"
+license = { text = "PolyForm-Noncommercial-1.0.0" }
 dependencies = [
   "pandas>=2.0",
   "pyarrow>=14.0",

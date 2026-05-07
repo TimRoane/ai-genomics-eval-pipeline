@@ -92,3 +92,7 @@ The dashboard shows summary metrics, tag-level pass rates, failure modes, failed
 ### Case Detail Modal
 
 ![Case detail modal showing input, expected versus extracted values, scoring, annotation context, and AI output](images/casedetails.png)
+
+## License
+
+This project is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). Noncommercial use is permitted under the license terms; commercial use requires separate permission from the project owner.
