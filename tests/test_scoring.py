@@ -1,9 +1,22 @@
 from genomics_eval.schemas import AIOutput, InputCase, VariantAnnotation
 from genomics_eval.scoring.field_scorers import normalize_classification, score_case
+from genomics_eval.variant_types import classify_variant_type
 
 
 def test_normalize_classification_aliases():
     assert normalize_classification("VUS") == "Uncertain significance"
+
+
+def test_classify_variant_type_uses_hgvs_when_tags_are_missing():
+    case = InputCase(
+        case_id="intronic-snv",
+        input_type="HGVS",
+        question="q",
+        input_variant="NM_130799.3:c.784-9G>A",
+        tags=["hgvs", "intronic"],
+    )
+
+    assert classify_variant_type(case) == "snv"
 
 
 def test_correct_gene_classification_passes():

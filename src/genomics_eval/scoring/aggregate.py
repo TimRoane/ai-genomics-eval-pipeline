@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 
 from genomics_eval.schemas import EvalScore
+from genomics_eval.variant_types import variant_type_from_tags
 
 OUTPUT_QUALITY_FAILURES = {"NO_OUTPUT", "PARSER_FAILURE"}
 
@@ -28,6 +29,7 @@ def aggregate_scores(scores: list[EvalScore]) -> dict:
         "condition_accuracy": _bool_rate([score.condition_correct for score in content_scores]),
         "transcript_accuracy": _optional_rate([score.transcript_correct for score in content_scores]),
         "field_accuracy_counts": _field_accuracy_counts(content_scores),
+        "accuracy_by_variant_type": _accuracy_by_variant_type(content_scores),
         "hallucination_rate": _rate(sum(score.hallucination_detected for score in scores), total),
         "failures_by_mode": dict(failures),
         "pass_rate_by_tag": {tag: _rate(tag_passes[tag], count) for tag, count in tag_totals.items()},
@@ -58,6 +60,25 @@ def _field_accuracy_counts(scores: list[EvalScore]) -> dict[str, dict[str, int]]
         "classification_accuracy": _required_count([score.classification_correct for score in scores]),
         "condition_accuracy": _required_count([score.condition_correct for score in scores]),
         "transcript_accuracy": _optional_count([score.transcript_correct for score in scores]),
+    }
+
+
+def _accuracy_by_variant_type(scores: list[EvalScore]) -> dict[str, dict]:
+    grouped_scores: dict[str, list[EvalScore]] = defaultdict(list)
+    for score in scores:
+        variant_type = score.variant_type if score.variant_type != "unclassified" else variant_type_from_tags(score.tags)
+        grouped_scores[variant_type].append(score)
+
+    return {
+        variant_type: {
+            "assessable_cases": len(group),
+            "gene_accuracy": _bool_rate([score.gene_correct for score in group]),
+            "classification_accuracy": _bool_rate([score.classification_correct for score in group]),
+            "condition_accuracy": _bool_rate([score.condition_correct for score in group]),
+            "transcript_accuracy": _optional_rate([score.transcript_correct for score in group]),
+            "field_accuracy_counts": _field_accuracy_counts(group),
+        }
+        for variant_type, group in sorted(grouped_scores.items())
     }
 
 

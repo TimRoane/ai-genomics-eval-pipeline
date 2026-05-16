@@ -9,9 +9,17 @@ THRESHOLDS = {
         "transcript_accuracy": 0.95,
         "hallucination_rate_max": 0.01,
     },
+    "stratified_thresholds": {
+        "variant_type_classification_accuracy": {
+            "minimum": 0.95,
+            "minimum_assessable_cases": 5,
+        }
+    },
     "regression_limits": {
         "max_overall_drop": 0.01,
         "max_classification_drop": 0.005,
+        "max_variant_type_classification_drop": 0.005,
+        "minimum_variant_type_assessable_cases": 5,
         "allow_new_critical_failures": False,
     },
 }
@@ -66,3 +74,73 @@ def test_all_thresholds_pass():
     assert release_gate(report) == 0
     assert report.hard_threshold_checks
     assert report.regression_checks
+
+
+def test_variant_type_hard_threshold_fails_for_supported_cohort():
+    report = compare_to_baseline(
+        {
+            "overall_pass_rate": 1.0,
+            "critical_case_pass_rate": 1.0,
+            "classification_accuracy": 1.0,
+            "transcript_accuracy": 1.0,
+            "hallucination_rate": 0.0,
+            "critical_failures": 0,
+            "accuracy_by_variant_type": {
+                "snv": {"assessable_cases": 10, "classification_accuracy": 0.90},
+            },
+        },
+        None,
+        THRESHOLDS,
+    )
+
+    assert report.hard_threshold_checks["variant_type_classification_accuracy:snv"] is False
+    assert "snv classification accuracy hard threshold failed" in report.failures
+
+
+def test_variant_type_hard_threshold_skips_small_cohort():
+    report = compare_to_baseline(
+        {
+            "overall_pass_rate": 1.0,
+            "critical_case_pass_rate": 1.0,
+            "classification_accuracy": 1.0,
+            "transcript_accuracy": 1.0,
+            "hallucination_rate": 0.0,
+            "critical_failures": 0,
+            "accuracy_by_variant_type": {
+                "indel": {"assessable_cases": 1, "classification_accuracy": 0.0},
+            },
+        },
+        None,
+        THRESHOLDS,
+    )
+
+    assert "variant_type_classification_accuracy:indel" not in report.hard_threshold_checks
+    assert report.passed
+
+
+def test_variant_type_classification_regression_fails_for_supported_cohort():
+    report = compare_to_baseline(
+        {
+            "overall_pass_rate": 1.0,
+            "critical_case_pass_rate": 1.0,
+            "classification_accuracy": 1.0,
+            "transcript_accuracy": 1.0,
+            "hallucination_rate": 0.0,
+            "critical_failures": 0,
+            "accuracy_by_variant_type": {
+                "snv": {"assessable_cases": 10, "classification_accuracy": 0.98},
+            },
+        },
+        {
+            "overall_pass_rate": 1.0,
+            "classification_accuracy": 1.0,
+            "critical_failures": 0,
+            "accuracy_by_variant_type": {
+                "snv": {"assessable_cases": 10, "classification_accuracy": 1.0},
+            },
+        },
+        THRESHOLDS,
+    )
+
+    assert report.regression_checks["max_variant_type_classification_drop:snv"] is False
+    assert "snv classification accuracy regressed" in report.failures

@@ -75,6 +75,7 @@ class AIOutput(BaseModel):
 
 class EvalScore(BaseModel):
     case_id: str
+    variant_type: str = "unclassified"
     gene_correct: bool
     transcript_correct: bool | None = None
     hgvs_correct: bool | None = None

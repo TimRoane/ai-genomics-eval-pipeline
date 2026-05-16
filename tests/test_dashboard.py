@@ -3,6 +3,7 @@ import pandas as pd
 from genomics_eval.dashboard.app import (
     build_case_detail,
     compute_dashboard_metrics,
+    detail_rows_table,
     failed_critical_cases,
     field_accuracy_counts_table,
     failure_mode_legend_table,
@@ -14,6 +15,7 @@ from genomics_eval.dashboard.app import (
     selected_row_index,
     summarize_failure_categories,
     summarize_tags,
+    summarize_variant_type_accuracy,
 )
 from genomics_eval.scoring.failure_modes import FAILURE_MODES
 
@@ -107,6 +109,47 @@ def test_summarize_tags_orders_lowest_pass_rate_first():
 
     assert tag_df.iloc[0]["tag"] == "negative_control"
     assert "hgvs" in set(tag_df["tag"])
+
+
+def test_summarize_variant_type_accuracy_excludes_output_quality_failures():
+    df = pd.DataFrame(
+        [
+            {
+                "case_id": "snv-pass",
+                "tags": ["snv"],
+                "failure_modes": [],
+                "gene_correct": True,
+                "classification_correct": True,
+                "condition_correct": True,
+                "transcript_correct": True,
+            },
+            {
+                "case_id": "snv-wrong-class",
+                "tags": ["snv"],
+                "failure_modes": ["WRONG_CLASSIFICATION"],
+                "gene_correct": True,
+                "classification_correct": False,
+                "condition_correct": True,
+                "transcript_correct": None,
+            },
+            {
+                "case_id": "deletion-no-output",
+                "tags": ["deletion"],
+                "failure_modes": ["NO_OUTPUT"],
+                "gene_correct": False,
+                "classification_correct": False,
+                "condition_correct": False,
+                "transcript_correct": False,
+            },
+        ]
+    )
+
+    summary = summarize_variant_type_accuracy(df)
+
+    assert summary["variant_type"].tolist() == ["snv"]
+    assert summary.iloc[0]["assessable_cases"] == 2
+    assert summary.iloc[0]["classification_accuracy"] == 0.5
+    assert summary.iloc[0]["transcript_accuracy"] == 1.0
 
 
 def test_prepare_case_table_formats_lists():
@@ -310,6 +353,19 @@ def test_build_case_detail_formats_vcf_input_fields():
     assert {"field": "pos", "value": 44908684} in detail["input"]
     assert {"field": "ref", "value": "T"} in detail["input"]
     assert {"field": "alt", "value": "C"} in detail["input"]
+
+
+def test_detail_rows_table_normalizes_mixed_display_values():
+    table = detail_rows_table(
+        [
+            {"field": "gene_correct", "value": True},
+            {"field": "source_supported", "value": None},
+            {"field": "failure_modes", "value": "none"},
+        ]
+    )
+
+    assert table["value"].tolist() == ["true", "none", "none"]
+    assert all(isinstance(value, str) for value in table["value"])
 
 
 def test_selected_row_index_supports_streamlit_selection_shape():
