@@ -16,6 +16,7 @@ from genomics_eval.dashboard.app import (
     summarize_failure_categories,
     summarize_tags,
     summarize_variant_type_accuracy,
+    variant_type_accuracy_column_config,
 )
 from genomics_eval.scoring.failure_modes import FAILURE_MODES
 
@@ -150,6 +151,14 @@ def test_summarize_variant_type_accuracy_excludes_output_quality_failures():
     assert summary.iloc[0]["assessable_cases"] == 2
     assert summary.iloc[0]["classification_accuracy"] == 0.5
     assert summary.iloc[0]["transcript_accuracy"] == 1.0
+
+
+def test_variant_type_accuracy_column_config_uses_compact_labels():
+    config = variant_type_accuracy_column_config()
+
+    assert config["variant_type"]["label"] == "type"
+    assert config["assessable_cases"]["label"] == "cases"
+    assert config["classification_accuracy"]["label"] == "classification"
 
 
 def test_prepare_case_table_formats_lists():

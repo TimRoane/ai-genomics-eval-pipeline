@@ -283,22 +283,18 @@ def main(
                     "pass_rate": st.column_config.ProgressColumn("pass_rate", format="%.1f", min_value=0, max_value=1),
                 },
             )
-        st.subheader("Accuracy By Variant Type")
-        variant_type_df = summarize_variant_type_accuracy(df)
-        if variant_type_df.empty:
-            st.info("No variant-type tags available.")
-        else:
-            st.dataframe(
-                variant_type_df,
-                hide_index=True,
-                use_container_width=True,
-                column_config={
-                    "gene_accuracy": st.column_config.ProgressColumn("gene_accuracy", format="%.1f", min_value=0, max_value=1),
-                    "classification_accuracy": st.column_config.ProgressColumn("classification_accuracy", format="%.1f", min_value=0, max_value=1),
-                    "condition_accuracy": st.column_config.ProgressColumn("condition_accuracy", format="%.1f", min_value=0, max_value=1),
-                    "transcript_accuracy": st.column_config.ProgressColumn("transcript_accuracy", format="%.1f", min_value=0, max_value=1),
-                },
-            )
+
+    st.subheader("Accuracy By Variant Type")
+    variant_type_df = summarize_variant_type_accuracy(df)
+    if variant_type_df.empty:
+        st.info("No variant-type tags available.")
+    else:
+        st.dataframe(
+            variant_type_df,
+            hide_index=True,
+            use_container_width=True,
+            column_config=variant_type_accuracy_column_config(),
+        )
 
     st.markdown('<div class="section-rule"></div>', unsafe_allow_html=True)
     st.subheader("Case Triage")
@@ -639,6 +635,17 @@ def summarize_variant_type_accuracy(df: pd.DataFrame) -> pd.DataFrame:
             }
         )
     return pd.DataFrame(rows)
+
+
+def variant_type_accuracy_column_config() -> dict[str, Any]:
+    return {
+        "variant_type": st.column_config.TextColumn("type", width="small"),
+        "assessable_cases": st.column_config.NumberColumn("cases", width="small"),
+        "gene_accuracy": st.column_config.ProgressColumn("gene", width="small", format="%.1f", min_value=0, max_value=1),
+        "classification_accuracy": st.column_config.ProgressColumn("classification", width="small", format="%.1f", min_value=0, max_value=1),
+        "condition_accuracy": st.column_config.ProgressColumn("condition", width="small", format="%.1f", min_value=0, max_value=1),
+        "transcript_accuracy": st.column_config.ProgressColumn("transcript", width="small", format="%.1f", min_value=0, max_value=1),
+    }
 
 
 def prepare_case_table(df: pd.DataFrame) -> pd.DataFrame:
