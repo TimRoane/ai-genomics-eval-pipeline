@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 
 from genomics_eval.schemas import AIOutput, EvalScore, InputCase, VariantAnnotation
+from genomics_eval.variant_types import classify_variant_type
 
 CLASSIFICATION_ALIASES = {
     "pathogenic": "Pathogenic",
@@ -44,6 +45,7 @@ def score_case(case: InputCase, annotation: VariantAnnotation | None, ai_output:
     if failure_modes:
         return EvalScore(
             case_id=case.case_id,
+            variant_type=classify_variant_type(case),
             gene_correct=case.expected_gene is None,
             transcript_correct=False if case.expected_transcript else None,
             hgvs_correct=False if case.expected_hgvs_c else None,
@@ -102,6 +104,7 @@ def score_case(case: InputCase, annotation: VariantAnnotation | None, ai_output:
     passed = not failure_modes
     return EvalScore(
         case_id=case.case_id,
+        variant_type=classify_variant_type(case),
         gene_correct=gene_correct,
         transcript_correct=transcript_correct,
         hgvs_correct=hgvs_correct,

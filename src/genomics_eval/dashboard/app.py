@@ -9,6 +9,7 @@ import pandas as pd
 import streamlit as st
 
 from genomics_eval.scoring.failure_modes import FAILURE_MODES
+from genomics_eval.variant_types import variant_type_from_tags
 
 
 FAILURE_MODE_CATEGORIES = {
@@ -283,6 +284,18 @@ def main(
                 },
             )
 
+    st.subheader("Accuracy By Variant Type")
+    variant_type_df = summarize_variant_type_accuracy(df)
+    if variant_type_df.empty:
+        st.info("No variant-type tags available.")
+    else:
+        st.dataframe(
+            variant_type_df,
+            hide_index=True,
+            use_container_width=True,
+            column_config=variant_type_accuracy_column_config(),
+        )
+
     st.markdown('<div class="section-rule"></div>', unsafe_allow_html=True)
     st.subheader("Case Triage")
     triage_df = prepare_case_table(df)
@@ -469,23 +482,23 @@ def render_case_detail_dialog(detail: dict[str, Any]) -> None:
         st.warning(warning)
 
     st.markdown("#### Input")
-    st.dataframe(pd.DataFrame(detail["input"]), hide_index=True, use_container_width=True)
+    st.dataframe(detail_rows_table(detail["input"]), hide_index=True, use_container_width=True)
 
     st.markdown("#### Expected vs Extracted")
-    st.dataframe(pd.DataFrame(detail["expected_vs_extracted"]), hide_index=True, use_container_width=True)
+    st.dataframe(detail_rows_table(detail["expected_vs_extracted"]), hide_index=True, use_container_width=True)
 
     st.markdown("#### Scoring")
-    st.dataframe(pd.DataFrame(detail["scoring"]), hide_index=True, use_container_width=True)
+    st.dataframe(detail_rows_table(detail["scoring"]), hide_index=True, use_container_width=True)
 
     st.markdown("#### Annotation Context")
     if detail["annotation"]:
-        st.dataframe(pd.DataFrame(detail["annotation"]), hide_index=True, use_container_width=True)
+        st.dataframe(detail_rows_table(detail["annotation"]), hide_index=True, use_container_width=True)
     else:
         st.info("No annotation detail available for this case.")
 
     st.markdown("#### AI Output")
     if detail["ai_output"]:
-        st.dataframe(pd.DataFrame(detail["ai_output"]), hide_index=True, use_container_width=True)
+        st.dataframe(detail_rows_table(detail["ai_output"]), hide_index=True, use_container_width=True)
         response_text = detail.get("raw_response_text")
         if response_text:
             with st.expander("Raw response_text", expanded=False):
@@ -591,6 +604,48 @@ def summarize_tags(df: pd.DataFrame) -> pd.DataFrame:
         .sort_values(["pass_rate", "cases", "tag"], ascending=[True, False, True])
     )
     return summary
+
+
+def summarize_variant_type_accuracy(df: pd.DataFrame) -> pd.DataFrame:
+    if "tags" not in df.columns or "failure_modes" not in df.columns:
+        return pd.DataFrame()
+    content_df = df[df["failure_modes"].apply(has_assessable_content)].copy()
+    if content_df.empty:
+        return pd.DataFrame()
+    if "variant_type" not in content_df.columns:
+        content_df["variant_type"] = content_df["tags"].apply(lambda tags: variant_type_from_tags(_normalize_list(tags)))
+    else:
+        content_df["variant_type"] = content_df.apply(
+            lambda row: row["variant_type"]
+            if row.get("variant_type") and row["variant_type"] != "unclassified"
+            else variant_type_from_tags(_normalize_list(row.get("tags"))),
+            axis=1,
+        )
+    rows: list[dict[str, Any]] = []
+    for variant_type, group in content_df.groupby("variant_type", sort=True):
+        transcript_series = group["transcript_correct"].dropna() if "transcript_correct" in group.columns else pd.Series(dtype=bool)
+        rows.append(
+            {
+                "variant_type": variant_type,
+                "assessable_cases": len(group),
+                "gene_accuracy": float(group["gene_correct"].mean()) if "gene_correct" in group.columns else 1.0,
+                "classification_accuracy": float(group["classification_correct"].mean()) if "classification_correct" in group.columns else 1.0,
+                "condition_accuracy": float(group["condition_correct"].mean()) if "condition_correct" in group.columns else 1.0,
+                "transcript_accuracy": float(transcript_series.mean()) if len(transcript_series) else 1.0,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def variant_type_accuracy_column_config() -> dict[str, Any]:
+    return {
+        "variant_type": st.column_config.TextColumn("type", width="small"),
+        "assessable_cases": st.column_config.NumberColumn("cases", width="small"),
+        "gene_accuracy": st.column_config.ProgressColumn("gene", width="small", format="%.1f", min_value=0, max_value=1),
+        "classification_accuracy": st.column_config.ProgressColumn("classification", width="small", format="%.1f", min_value=0, max_value=1),
+        "condition_accuracy": st.column_config.ProgressColumn("condition", width="small", format="%.1f", min_value=0, max_value=1),
+        "transcript_accuracy": st.column_config.ProgressColumn("transcript", width="small", format="%.1f", min_value=0, max_value=1),
+    }
 
 
 def prepare_case_table(df: pd.DataFrame) -> pd.DataFrame:
@@ -751,6 +806,13 @@ def ai_output_rows(output: dict | None) -> list[dict[str, Any]]:
     return [{"field": field, "value": format_detail_value(output.get(field))} for field in fields]
 
 
+def detail_rows_table(rows: list[dict[str, Any]]) -> pd.DataFrame:
+    table = pd.DataFrame(rows)
+    for column in table.columns:
+        table[column] = table[column].map(format_detail_display_value)
+    return table
+
+
 def regression_checks_table(report: dict[str, Any]) -> pd.DataFrame:
     rows = []
     hard_checks = report.get("hard_threshold_checks", {})
@@ -886,6 +948,15 @@ def format_detail_value(value) -> Any:
     if isinstance(value, dict):
         return json.dumps(value, sort_keys=True)
     return value
+
+
+def format_detail_display_value(value) -> str:
+    value = format_detail_value(value)
+    if value is None:
+        return "none"
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return str(value)
 
 
 def format_rate(value: float | int | None) -> str:

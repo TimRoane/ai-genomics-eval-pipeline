@@ -11,6 +11,7 @@ def make_score(
     transcript_correct: bool | None = True,
     passed: bool = True,
     failure_modes: list[str] | None = None,
+    tags: list[str] | None = None,
 ) -> EvalScore:
     return EvalScore(
         case_id=case_id,
@@ -24,6 +25,7 @@ def make_score(
         passed=passed,
         severity="medium",
         failure_modes=failure_modes or [],
+        tags=tags or [],
     )
 
 
@@ -59,3 +61,45 @@ def test_field_accuracies_exclude_output_quality_failures():
         "assessable": 2,
         "incorrect": 0,
     }
+
+
+def test_accuracy_metrics_are_stratified_by_variant_type():
+    metrics = aggregate_scores(
+        [
+            make_score("snv-pass", tags=["snv"]),
+            make_score(
+                "snv-wrong-class",
+                classification_correct=False,
+                passed=False,
+                failure_modes=["WRONG_CLASSIFICATION"],
+                tags=["snv"],
+            ),
+            make_score("deletion-pass", tags=["deletion"]),
+            make_score(
+                "deletion-no-output",
+                gene_correct=False,
+                classification_correct=False,
+                condition_correct=False,
+                transcript_correct=False,
+                passed=False,
+                failure_modes=["NO_OUTPUT"],
+                tags=["deletion"],
+            ),
+        ]
+    )
+
+    assert metrics["accuracy_by_variant_type"]["snv"] == {
+        "assessable_cases": 2,
+        "gene_accuracy": 1.0,
+        "classification_accuracy": 0.5,
+        "condition_accuracy": 1.0,
+        "transcript_accuracy": 1.0,
+        "field_accuracy_counts": {
+            "gene_accuracy": {"correct": 2, "assessable": 2, "incorrect": 0},
+            "classification_accuracy": {"correct": 1, "assessable": 2, "incorrect": 1},
+            "condition_accuracy": {"correct": 2, "assessable": 2, "incorrect": 0},
+            "transcript_accuracy": {"correct": 2, "assessable": 2, "incorrect": 0},
+        },
+    }
+    assert metrics["accuracy_by_variant_type"]["deletion"]["assessable_cases"] == 1
+    assert metrics["accuracy_by_variant_type"]["deletion"]["classification_accuracy"] == 1.0

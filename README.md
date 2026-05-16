@@ -43,7 +43,7 @@ The demo also includes intentional negative controls tagged with `negative_contr
 
 To balance that failure-mode coverage, the dataset also includes 30 `positive_control` HGVS cases across cancer predisposition, cardiovascular, connective tissue, metabolic, renal, neuromuscular, and neurogenetics examples. These are expected to pass cleanly and make the dashboard's accuracy views more representative.
 
-Release gating has two layers. `hard_thresholds` in `configs/thresholds.yaml` are absolute current-run requirements for overall pass rate, critical case pass rate, transcript accuracy, and maximum hallucination rate. These do not move with the baseline. `regression_limits` compare the current run to the baseline and catch performance drops.
+Release gating has three layers. `hard_thresholds` in `configs/thresholds.yaml` are absolute current-run requirements for overall pass rate, critical case pass rate, transcript accuracy, and maximum hallucination rate. `stratified_thresholds` enforce per-variant-type classification accuracy once a cohort has enough assessable cases to be meaningful. `regression_limits` compare the current run to the baseline and catch both global drops and supported variant-type classification drops.
 
 Expected demo output is written under `data/results/`, including:
 
@@ -83,7 +83,7 @@ VariantValidator integration is optional. The client supports a local JSON cache
 streamlit run src/genomics_eval/dashboard/app.py
 ```
 
-The dashboard shows summary metrics, tag-level pass rates, failure modes, failed critical cases, case drilldowns, and release gate status.
+The dashboard shows summary metrics, tag-level pass rates, variant-type accuracy stratification, failure modes, failed critical cases, case drilldowns, and release gate status.
 
 ### Dashboard Summary
 

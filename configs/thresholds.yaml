@@ -4,7 +4,14 @@ hard_thresholds:
   transcript_accuracy: 0.90
   hallucination_rate_max: 0.03
 
+stratified_thresholds:
+  variant_type_classification_accuracy:
+    minimum: 0.95
+    minimum_assessable_cases: 5
+
 regression_limits:
   max_overall_drop: 0.01
   max_classification_drop: 0.005
+  max_variant_type_classification_drop: 0.005
+  minimum_variant_type_assessable_cases: 5
   allow_new_critical_failures: false
